@@ -1,5 +1,10 @@
 #include "biblioteca.h"
 
+void cadastrar_cliente(){
+
+    
+}
+
 Clientes* deletar_cliente(Clientes* usuarios , char* CPF){
     Clientes* usuarios_temp;
 
