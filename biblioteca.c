@@ -77,7 +77,6 @@ Clientes* deposita(Clientes* usuarios , char* CPF , double valor){
         printf("Nenhum cliente cadastrado com o CPF digitado.\n");
         printf("==============\n");
     }else {
-
         if (strcmp(usuarios->lista[posicao].Tipo_conta, "Comum") == 0 || strcmp(usuarios->lista[posicao].Tipo_conta, "comum") == 0) {
             usuarios->lista[posicao].Saldo += valor * 0.95;
         } else {
@@ -100,6 +99,8 @@ int buscaCPF(Clientes* usuarios, char* CPF){
 
     return -1;
 }
+
+
 
 int buscaSenha(Clientes* usuarios , char* Senha){
 
