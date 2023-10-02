@@ -71,6 +71,7 @@ void listar_clientes(Clientes* usuarios){
 Clientes* deposita(Clientes* usuarios , char* CPF , double valor){
 
     int posicao = buscaCPF(usuarios , CPF);
+    double taxas;
 
     if(posicao == -1){
         printf("==============\n");
@@ -78,15 +79,41 @@ Clientes* deposita(Clientes* usuarios , char* CPF , double valor){
         printf("==============\n");
     }else {
         if (strcmp(usuarios->lista[posicao].Tipo_conta, "Comum") == 0 || strcmp(usuarios->lista[posicao].Tipo_conta, "comum") == 0) {
-            usuarios->lista[posicao].Saldo += valor * 0.95;
+            taxas = valor * 0.95;
         } else {
-            usuarios->lista[posicao].Saldo += valor * 0.97;
+            taxas = valor * 0.97;
         }
     }
+
+    usuarios->lista[posicao].extrato[usuarios->lista[posicao].qtd_extrato] = adiciona_transacao("Deposito", valor, taxas);
+
+    usuarios->lista[posicao].qtd_extrato++;
 
     return usuarios;
 }
 
+Extrato adiciona_transacao(char* operacao , double valor , double taxa){
+    Extrato stc_temp;
+    strcpy(stc_temp.operacao, operacao);
+    stc_temp.valor = valor;
+    stc_temp.taxa = taxa;
+
+    struct tm *p;
+    time_t seconds;
+
+    time(&seconds);
+    p = localtime(&seconds);
+
+    stc_temp.hora = p->tm_hour;
+    stc_temp.minuto = p->tm_min;
+    stc_temp.segundo = p->tm_sec;
+
+    stc_temp.dia = p->tm_mday;
+    stc_temp.mes = p->tm_mon + 1;
+    stc_temp.ano = p->tm_year + 1900;
+
+    return stc_temp;
+}
 
 
 int buscaCPF(Clientes* usuarios, char* CPF){
