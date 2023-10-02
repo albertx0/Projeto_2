@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 
 typedef struct{
     char nome[100];
@@ -24,7 +25,10 @@ typedef struct{
 
 
 
-
+void menu();
 Clientes* deletar_cliente(Clientes* usuarios , char* CPF);
+void listar_clientes(Clientes* usuarios);
+Clientes* deposita(Clientes* usuarios , char* CPF , double valor);
+int buscaCPF(Clientes* usuarios, char* CPF);
 
 #endif //PROJETO_2_BIBLIOTECA_H
