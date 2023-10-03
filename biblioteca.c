@@ -1,8 +1,9 @@
 #include "biblioteca.h"
 
-void cadastrar_cliente(){
-
-    
+void criar_cliente(char *nome,char *CPF,char *Tipo_conta,double saldo,char * Senha){
+   
+  
+  
 }
 
 Clientes* deletar_cliente(Clientes* usuarios , char* CPF){
