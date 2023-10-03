@@ -2,7 +2,10 @@
 
 void criar_cliente(char *nome,char *CPF,char *Tipo_conta,double saldo,char * Senha){
    
-  
+  FILE *f = fopen(data, "wb");
+  Dados dados1={*nome,*CPF,*Tipo_conta,saldo,*Senha};
+  fwrite(&dados1,sizeof(Dados),1,f);
+  fclose(f);
   
 }
 
