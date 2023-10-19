@@ -82,5 +82,26 @@ void listar_clientes(Clientes* usuarios){
 }
 
 void listar(){
-    
+    FILE* arquivo = fopen("dados.bin", "rb");
+
+    if (arquivo == NULL) {
+        perror("Erro ao abrir o arquivo");
+        printf("Erro Ao Abrir O Arquivo\n");
+    }
+
+    Dados pessoa_lida;
+
+    int c=0;
+    /*Enquanto todos os dados do arquvo não tiverem
+    Passado Pelo Struc Dados o Programa Continua Printando os Dados dos             Clintes(exceto as senhas)*/
+    while (fread(&pessoa_lida, sizeof(Dados), 1, arquivo) == 1) {
+        printf("Cliente Numero %d:\n", c + 1);
+        printf("Nome: %s\n", pessoa_lida.nome);
+        printf("CPF: %s\n", pessoa_lida.CPF);
+        printf("Tipo De Conta: %s\n", pessoa_lida.Tipo_conta);
+        printf("Saldo : R$ %0.2lf\n",pessoa_lida.Saldo);
+        printf("\n");
+        c++;
+    }
+
 }
