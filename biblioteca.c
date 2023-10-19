@@ -80,3 +80,7 @@ void listar_clientes(Clientes* usuarios){
         printf("==============");
     }
 }
+
+void listar(){
+    
+}
