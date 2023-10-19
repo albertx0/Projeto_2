@@ -1,6 +1,6 @@
 #include "biblioteca.h"
 
-void criar_cliente(char *nome,char *CPF,char *Tipo_conta,double saldo,char * Senha){
+void cadastrar(char *nome, double saldo, char *CPF, char *tc, char *senha){
    
   
   

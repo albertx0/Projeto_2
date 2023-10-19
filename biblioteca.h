@@ -24,7 +24,7 @@ typedef struct{
 
 
 
-void criar_cliente(char *nome,char *CPF,char *Tipo_conta,double saldo,char * Senha);
+void cadastrar(char *nome, double saldo, char *CPF, char *tc, char *senha);
 Clientes* deletar_cliente(Clientes* usuarios , char* CPF);
 
 #endif //PROJETO_2_BIBLIOTECA_H
