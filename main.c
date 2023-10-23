@@ -2,67 +2,70 @@
 
 int main(){
   char nome[50];
-  char CPFu[15];//CPF do usuário
-  char CPFd[15];//CPF do destinatário
+  char CPF[15];//CPF do usuário de origem
+  char CPF_destinatario[15];//CPF do destinatário
   char tipo_conta[10];
   double saldo;
   char senha[50];
-  int s=0; //Variavel de selção
+  int opcao=0; //Variavel de seleção
   double qtd=0;//Quantidade à serem debitadas ou transferidas
   
+  Clientes* lista_clientes = leitura("arquivo_clientes.txt");
 
+  printf("tam = %d\n" , lista_clientes->qtd);
   
   do{
-    printf("----------------------------\n\n");
+
     menu();
-    scanf("%d",&s);
-    printf("\n----------------------------\n\n");
+    scanf("%d",&opcao);
+
     while (getchar() != '\n');
-    if(s==1){
-        printf("----------------------------\n");
-        printf("Digite O Nome: ");
+    if(opcao==1){
+        printf("Digite o nome do cliente: ");
         input(nome);
-        printf("Digite O CPF: ");
-        input(CPFu);
-        printf("Digite A Senha: ");
+        printf("Digite o CPF do cliente: ");
+        input(CPF);
+        printf("Digite a senha do cliente: ");
         input(senha);
-        printf("Digite O Tipo De Conta: ");
+        printf("Digite o tipo de conta do cliente: ");
         input(tipo_conta);
-        printf("Digite O Saldo Incial: ");
-        scanf("%lf",&saldo);
-        cadastrar(nome,saldo,CPFu,tipo_conta,senha);
-        printf("----------------------------\n");
+        printf("Digite o saldo inicial da conta: ");
+        scanf("%lf", &saldo);
+        cadastrar(lista_clientes , nome,saldo,CPF,tipo_conta,senha);
     }
-    else if(s==2){
-        //deletar_cliente();
+    else if(opcao==2){
+        printf("Digite o CPF do cliente que deseja apagar: ");
+        input(CPF);
+        lista_clientes = deletar_cliente(lista_clientes , CPF);
     }
-    else if(s==3){
-      listar();
+    else if(opcao==3){
+      listar_clientes(lista_clientes);
     }
-    else if(s==4){
-      printf("Digite O Seu CPF: ");
-      input(CPFu);
-      printf("Digite A Sua Senha: ");
+    else if(opcao==4){
+      printf("Digite seu CPF: ");
+      input(CPF);
+      printf("Digite sua senha: ");
       input(senha);
-      printf("Digite A Quantidade A Ser Debitada: ");
+      printf("Digite o valor a ser debitado da conta: ");
       scanf("%lf",&qtd);
-      debitar(qtd,CPFu,senha); 
+      debitar( qtd , CPF , senha);
     }
-    else if(s==7){
+    else if(opcao==7){
       printf("Digite O Seu CPF: ");
-      input(CPFu);
+      input(CPF);
       printf("Digite Sua Senha: ");
       input(senha);
       printf("Digite O CPF Do Destinatario: ");
-      input(CPFd);
+      input(CPF_destinatario);
       printf("Digite A Quantidade A Ser Tranferida: ");
       scanf("%lf",&qtd);
-      transferencia(qtd,CPFu,CPFd,senha);
+      transferencia(qtd ,CPF ,CPF_destinatario ,senha);
     }
 
     printf("\n");
-  }while(s!=8);
+  }while(opcao!=8);
 
+  escreve(lista_clientes , "arquivo_clientes.txt");
   printf("Obrigado Por Escolher Quem Poupa Tem!\n");
   
   

@@ -1,21 +1,60 @@
 #include "biblioteca.h"
 
-void cadastrar(char *nome, double saldo, char *CPF, char *tc, char *senha){
-    Dados pessoa;
+Clientes* leitura(char *nome_arquivo) {
 
+    FILE *f = fopen(nome_arquivo, "rb"); // Abre o arquivo
+
+    Clientes *clientes_arquivados = (Clientes *)malloc(100 * sizeof(Clientes)); // Comentar
+
+    if(f == NULL){
+        clientes_arquivados->qtd = 0;
+    }else{
+        fread(clientes_arquivados, sizeof(Clientes), 100,f); // Comentar
+        fclose(f); // Fecha o arquivo
+    }
+
+    return clientes_arquivados; // Comentar
+}
+
+void escreve(Clientes *clientes , char *nome_arquivo) {
+    FILE *f = fopen(nome_arquivo, "w"); // Realiza a abertura do arquivo com o objetivo de escrever todas as possiveis tarefas feitas pelo usuario
+    fwrite(clientes, sizeof(Clientes), 100, f); // Escreve as tarefas
+    fclose(f); // Fecha o arquivo
+}
+
+void menu(){
+    printf("1 - Cadastrar Clientes.\n");
+    printf("2 - Apagar Cliente.\n");
+    printf("3 - Listar todos os clientes.\n");
+    printf("4 - Debitar valor de um cliente.\n");
+    printf("5 - Depositar dinheiro.\n");
+    printf("6 - Visualizar extrato.\n");
+    printf("7 - Transfrencia.\n");
+    printf("8 - Sair.\n\n");
+    printf("Digite o numero da opcao desejada: ");
+}
+
+Clientes* cadastrar(Clientes* usuarios, char *nome, double saldo_inicial, char *CPF, char *tipo_conta, char *senha){
+
+    int nova_posicao = usuarios->qtd;
+
+    //Copia as variaveis do struct para as variaveis da função
+    strcpy(usuarios->lista[nova_posicao].nome , nome);
+    strcpy(usuarios->lista[nova_posicao].CPF, CPF);
+    strcpy(usuarios->lista[nova_posicao].Tipo_conta, tipo_conta);
+    usuarios->lista[nova_posicao].Saldo = saldo_inicial;
+    strcpy(usuarios->lista[nova_posicao].Senha, senha);
+    usuarios->qtd++;
+    /*
     // Verifica se as strings não excedem os limites de caracteres
     if (strlen(nome) >= 100 || strlen(CPF) >= 15 || strlen(tc) >= 10 || strlen(senha) >= 50) {
         printf("Erro: uma ou mais strings ultrapassaram os limites de tamanho.\n");
         return;
     }
-    //Copia as variaveis do struct para as variaveis da função
-    strcpy(pessoa.nome, nome);
-    strcpy(pessoa.CPF, CPF);
-    strcpy(pessoa.Tipo_conta, tc);
-    pessoa.Saldo = saldo;
-    strcpy(pessoa.Senha, senha);
 
-    // Abre o arquivo para escrita binária
+    */
+    /*
+ // Abre o arquivo para escrita binária
     FILE *arquivo = fopen("dados.bin", "ab");
 
     if (arquivo == NULL) {
@@ -34,77 +73,58 @@ void cadastrar(char *nome, double saldo, char *CPF, char *tc, char *senha){
 
     // Fechando o arquivo
     fclose(arquivo);
-  
-  
+    */
+    return usuarios;
 }
 
 Clientes* deletar_cliente(Clientes* usuarios , char* CPF){
-    Clientes* usuarios_temp;
+    Clientes* usuarios_temp = (Clientes*)malloc(100 * sizeof(Clientes));
 
     if(usuarios->qtd == 0){
-        printf("==============");
+        printf("==============\n");
         printf("Nenhum usuario cadastro no banco\n");
-        printf("==============");
+        printf("==============\n");
+        return usuarios;
     }else{
         int cont = 0;
 
         for(int i = 0 ; i < usuarios->qtd ; i++){
-            if(usuarios->lista[i].CPF != CPF){
+            if(strcmp(usuarios->lista[i].CPF , CPF) != 0){
                 strcpy(usuarios_temp->lista[cont].nome , usuarios->lista[i].nome);
                 strcpy(usuarios_temp->lista[cont].CPF , usuarios->lista[i].CPF);
                 strcpy(usuarios_temp->lista[cont].Tipo_conta , usuarios->lista[i].Tipo_conta);
                 usuarios_temp->lista[cont].Saldo = usuarios_temp->lista[cont].Saldo;
                 strcpy(usuarios_temp->lista[cont].Senha , usuarios->lista[i].Senha);
-
                 cont++;
             }
         }
+
+        usuarios_temp->qtd = cont;
+
+        printf("==============\n");
+        printf("Cliente apagado com sucesso !\n");
+        printf("==============\n");
+        return usuarios_temp;
     }
 }
 
 void listar_clientes(Clientes* usuarios){
 
     if(usuarios->qtd == 0){
-        printf("==============");
+        printf("\n==============\n");
         printf("Nenhum usuario cadastrado no banco\n");
-        printf("==============");
+        printf("==============\n");
     }else{
-        printf("==============");
+        printf("\n==============\n");
 
         for(int i = 0 ; i < usuarios->qtd ; i++){
             printf("Nome: %s\n" , usuarios->lista[i].nome);
             printf("CPF: %s\n" , usuarios->lista[i].CPF);
-            printf("Tipo de conta: %s\n" , usuarios->lista[i].Tipo_conta);
+            printf("Tipo de conta: %s\n\n" , usuarios->lista[i].Tipo_conta);
         }
 
-        printf("==============");
+        printf("==============\n");
     }
-}
-
-void listar(){
-    //Abre o arquivo binário para leitura
-    FILE* arquivo = fopen("dados.bin", "rb");
-    //Se o aruivo não existir para a execução da função
-    if (arquivo == NULL) {
-        perror("Erro ao abrir o arquivo");
-        printf("Erro Ao Abrir O Arquivo\n");
-    }
-
-    Dados pessoa_lida;
-
-    int c=0;
-    /*Enquanto todos os dados do arquvo não tiverem
-    Passado Pelo Struc Dados o Programa Continua Printando os Dados dos           Clintes(exceto as senhas)*/
-    while (fread(&pessoa_lida, sizeof(Dados), 1, arquivo) == 1) {
-        printf("Cliente Numero %d:\n", c + 1);
-        printf("Nome: %s\n", pessoa_lida.nome);
-        printf("CPF: %s\n", pessoa_lida.CPF);
-        printf("Tipo De Conta: %s\n", pessoa_lida.Tipo_conta);
-        printf("Saldo : R$ %0.2lf\n",pessoa_lida.Saldo);
-        printf("\n");
-        c++;
-    }
-
 }
 
 void debitar(double qtd,char *CPF,char *senha){
@@ -112,7 +132,7 @@ void debitar(double qtd,char *CPF,char *senha){
   FILE* f = fopen("dados.bin","rb+");
 
   Dados pessoa_lida; //Forma como os dados do struct serão lidos pelo código dentro da função
-  
+
   //Se o aruivo não existir para a função
   if (f == NULL) {
       perror("Erro ao abrir o arquivo");
@@ -122,12 +142,12 @@ void debitar(double qtd,char *CPF,char *senha){
   while (fread(&pessoa_lida, sizeof(Dados), 1, f) == 1) {
     if(strcmp(pessoa_lida.CPF,CPF)==0 && strcmp(pessoa_lida.Senha,senha)==0){
         pessoa_lida.Saldo = pessoa_lida.Saldo - qtd;
-        fseek(f,-sizeof(Dados),SEEK_CUR);
+        fseek(f,sizeof(Dados),SEEK_CUR);
         fwrite(&pessoa_lida,sizeof(Dados),1,f);
         v=1;
         break;
       }
-    
+
   }
   //Em caso de a(s) informação(ões) estiver(em) incorreta(s) ou inexistente(s), informa o usuaria com as mensagens
   if(v==0){
@@ -137,7 +157,7 @@ void debitar(double qtd,char *CPF,char *senha){
     printf("----------------------------\n\n");
   }
   fclose(f);
-  
+
 }
 
 void transferencia(double qtd,char *cpfu, char *cpfd,char *senha){
@@ -158,7 +178,7 @@ void transferencia(double qtd,char *cpfu, char *cpfd,char *senha){
         if (strcmp(pessoa_lida.CPF, cpfu) == 0 && strcmp(pessoa_lida.Senha, senha) == 0) {
             printf("Teste\n");
             pessoa_lida.Saldo = pessoa_lida.Saldo - qtd;
-            fseek(f, -sizeof(Dados), SEEK_CUR);
+            fseek(f, sizeof(Dados), SEEK_CUR);
             fwrite(&pessoa_lida, sizeof(Dados), 1, f);
             v = 1;
             break;
@@ -173,7 +193,7 @@ void transferencia(double qtd,char *cpfu, char *cpfd,char *senha){
             if (strcmp(pessoa_lida.CPF, cpfd) == 0) {
                 printf("Teste\n");
                 pessoa_lida.Saldo = pessoa_lida.Saldo + qtd;
-                fseek(f, -sizeof(Dados), SEEK_CUR);
+                fseek(f, sizeof(Dados), SEEK_CUR);
                 fwrite(&pessoa_lida, sizeof(Dados), 1, f);
                 break;
             }
@@ -190,21 +210,13 @@ void transferencia(double qtd,char *cpfu, char *cpfd,char *senha){
     fclose(f);
 }
 
-void menu(){    
-    printf("1 - Cadastrar Clientes.\n");
-    printf("2 - Apagar Cliente.\n");
-    printf("3 - Listar todos os clientes.\n");
-    printf("4 - Debitar valor de um cliente.\n");
-    printf("5 - Depositar dinheiro.\n");
-    printf("6 - Visualizar extrato.\n");
-    printf("7 - Transfrencia.\n");
-    printf("8 - Sair.\n\n");
-    printf("Digite o numero da opcao desejada: ");
-}
 
-void input(char *str){
+
+char* input(char *str){
   scanf("%[^\n]s",str); //Recebe o array de chars/string
-  while (getchar() != '\n'); //Impede Que Sejam Pulados Inputs futuros após ser pressionada a tecla "enter"
 
-    return *str;
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) { } //Impede Que Sejam Pulados Inputs futuros após ser pressionada a tecla "enter"
+
+    return str;
 }

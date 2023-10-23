@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 
 typedef struct{
@@ -23,14 +24,16 @@ typedef struct{
 } Clientes;
 
 
-
-void cadastrar(char *nome, double saldo, char *CPF, char *tc, char *senha);
+Clientes* leitura(char *nome);
+void escreve(Clientes *v , char *nome);
+Clientes* cadastrar(Clientes* usuarios, char *nome, double saldo_inicial, char *CPF, char *tipo_conta, char *senha);
 Clientes* deletar_cliente(Clientes* usuarios , char* CPF);
 void listar();
+void listar_clientes(Clientes* usuarios);
 void debitar(double qtd,char *CPF,char *senha);
 void transferencia(double qtd,char *cpfa, char *cpfd,char *senha);
 void menu();
-void input(char *str);
+char* input(char *str);
 
 
 #endif //PROJETO_2_BIBLIOTECA_H
