@@ -105,3 +105,5 @@ void listar(){
     }
 
 }
+
+void debitar(double qtd,char *CPF,char *senha)

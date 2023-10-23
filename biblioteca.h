@@ -27,5 +27,6 @@ typedef struct{
 void cadastrar(char *nome, double saldo, char *CPF, char *tc, char *senha);
 Clientes* deletar_cliente(Clientes* usuarios , char* CPF);
 void listar();
+void debitar(double qtd,char *CPF,char *senha);
 
 #endif //PROJETO_2_BIBLIOTECA_H
