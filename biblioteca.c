@@ -138,4 +138,40 @@ void debitar(double qtd,char *CPF,char *senha){
   
 }
 
-void transferencia(double qtd,char *cpfa, char *cpfd,char *senha);
+void transferencia(double qtd,char *cpfa, char *cpfd,char *senha){
+    int v = 0; // Int verificadora
+    FILE* f = fopen("dados.bin", "rb+");
+
+    Dados pessoa_lida;
+
+    if (f == NULL) {
+        perror("Erro ao abrir o arquivo");
+        printf("Erro Ao Abrir O Arquivo\n");
+        return;
+    }
+
+    while (fread(&pessoa_lida, sizeof(Dados), 1, f) == 1) {
+        if (strcmp(pessoa_lida.CPF, cpfu) == 0 && strcmp(pessoa_lida.Senha, senha) == 0) {
+            printf("Teste\n");
+            pessoa_lida.Saldo = pessoa_lida.Saldo - qtd;
+            fseek(f, -sizeof(Dados), SEEK_CUR);
+            fwrite(&pessoa_lida, sizeof(Dados), 1, f);
+            v = 1;
+            break;
+        }
+    }
+
+    rewind(f);  // Retorna o ponteiro de leitura para o início do arquivo
+
+    while (fread(&pessoa_lida, sizeof(Dados), 1, f) == 1) {
+        if (strcmp(pessoa_lida.CPF, cpfd) == 0 && v == 1) {
+            printf("Teste\n");
+            pessoa_lida.Saldo = pessoa_lida.Saldo + qtd;
+            fseek(f, -sizeof(Dados), SEEK_CUR);
+            fwrite(&pessoa_lida, sizeof(Dados), 1, f);
+            break;
+        }
+    }
+
+    fclose(f);
+}
