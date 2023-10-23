@@ -140,7 +140,7 @@ void debitar(double qtd,char *CPF,char *senha){
   
 }
 
-void transferencia(double qtd,char *cpfa, char *cpfd,char *senha){
+void transferencia(double qtd,char *cpfu, char *cpfd,char *senha){
     int v = 0; // Int verifica de a primeira condição foi cumprida
     FILE* f = fopen("dados.bin", "rb+");
 
@@ -183,7 +183,7 @@ void transferencia(double qtd,char *cpfa, char *cpfd,char *senha){
         printf("\n----------------------------\n\n");
         printf("CPF Do Usuário E/Ou Senha Incorretos E/Ou\n");
         printf("CPF De Destinatário Incorreto\n");
-        printf("----------------------------\n\n");
+        printf("\n----------------------------\n\n");
     }
 
     fclose(f);
