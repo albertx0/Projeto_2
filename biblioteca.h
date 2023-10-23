@@ -29,6 +29,8 @@ Clientes* deletar_cliente(Clientes* usuarios , char* CPF);
 void listar();
 void debitar(double qtd,char *CPF,char *senha);
 void transferencia(double qtd,char *cpfa, char *cpfd,char *senha);
+void menu();
+void input(char *str);
 
 
 #endif //PROJETO_2_BIBLIOTECA_H

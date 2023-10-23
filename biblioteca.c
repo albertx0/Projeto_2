@@ -188,3 +188,22 @@ void transferencia(double qtd,char *cpfa, char *cpfd,char *senha){
 
     fclose(f);
 }
+
+void menu(){    
+    printf("1 - Cadastrar Clientes.\n");
+    printf("2 - Apagar Cliente.\n");
+    printf("3 - Listar todos os clientes.\n");
+    printf("4 - Debitar valor de um cliente.\n");
+    printf("5 - Depositar dinheiro.\n");
+    printf("6 - Visualizar extrato.\n");
+    printf("7 - Transfrencia.\n");
+    printf("8 - Sair.\n\n");
+    printf("Digite o numero da opcao desejada: ");
+}
+
+void input(char *str){
+  scanf("%[^\n]s",str);
+  while (getchar() != '\n');
+
+    return *str;
+}
