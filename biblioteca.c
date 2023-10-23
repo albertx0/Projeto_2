@@ -137,3 +137,5 @@ void debitar(double qtd,char *CPF,char *senha){
   fclose(f);
   
 }
+
+void transferencia(double qtd,char *cpfa, char *cpfd,char *senha);
