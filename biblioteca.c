@@ -183,6 +183,7 @@ void transferencia(double qtd,char *cpfu, char *cpfd,char *senha){
         printf("\n----------------------------\n\n");
         printf("CPF Do Usuário E/Ou Senha Incorretos E/Ou\n");
         printf("CPF De Destinatário Incorreto\n");
+        printf("Tente Novamente\n");
         printf("\n----------------------------\n\n");
     }
 
@@ -202,8 +203,8 @@ void menu(){
 }
 
 void input(char *str){
-  scanf("%[^\n]s",str);
-  while (getchar() != '\n');
+  scanf("%[^\n]s",str); //Recebe o array de chars/string
+  while (getchar() != '\n'); //Impede Que Sejam Pulados Inputs futuros após ser pressionada a tecla "enter"
 
     return *str;
 }
