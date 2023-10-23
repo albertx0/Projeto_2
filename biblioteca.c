@@ -3,7 +3,7 @@
 void cadastrar(char *nome, double saldo, char *CPF, char *tc, char *senha){
     Dados pessoa;
 
-    // Verifica se as strings não excedem os limites das strings
+    // Verifica se as strings não excedem os limites de caracteres
     if (strlen(nome) >= 100 || strlen(CPF) >= 15 || strlen(tc) >= 10 || strlen(senha) >= 50) {
         printf("Erro: uma ou mais strings ultrapassaram os limites de tamanho.\n");
         return;
@@ -15,7 +15,7 @@ void cadastrar(char *nome, double saldo, char *CPF, char *tc, char *senha){
     pessoa.Saldo = saldo;
     strcpy(pessoa.Senha, senha);
 
-    // Abrindo o arquivo para escrita binária
+    // Abre o arquivo para escrita binária
     FILE *arquivo = fopen("dados.bin", "ab");
 
     if (arquivo == NULL) {
@@ -23,7 +23,7 @@ void cadastrar(char *nome, double saldo, char *CPF, char *tc, char *senha){
         printf("Erro Ao Abrir o Arquivo\n");
     }
 
-    // Escrevendo a estrutura no arquivo
+    // Escreve a estrutura no arquivo
     size_t elementos_gravados = fwrite(&pessoa, sizeof(Dados), 1, arquivo);
 
     if (elementos_gravados != 1) {
@@ -82,8 +82,9 @@ void listar_clientes(Clientes* usuarios){
 }
 
 void listar(){
+    //Abre o arquivo binário para leitura
     FILE* arquivo = fopen("dados.bin", "rb");
-
+    //Se o aruivo não existir para a execução da função
     if (arquivo == NULL) {
         perror("Erro ao abrir o arquivo");
         printf("Erro Ao Abrir O Arquivo\n");
@@ -93,7 +94,7 @@ void listar(){
 
     int c=0;
     /*Enquanto todos os dados do arquvo não tiverem
-    Passado Pelo Struc Dados o Programa Continua Printando os Dados dos             Clintes(exceto as senhas)*/
+    Passado Pelo Struc Dados o Programa Continua Printando os Dados dos           Clintes(exceto as senhas)*/
     while (fread(&pessoa_lida, sizeof(Dados), 1, arquivo) == 1) {
         printf("Cliente Numero %d:\n", c + 1);
         printf("Nome: %s\n", pessoa_lida.nome);
@@ -110,14 +111,14 @@ void debitar(double qtd,char *CPF,char *senha){
   int v=0;//Verifica se foram encontrados os dados
   FILE* f = fopen("dados.bin","rb+");
 
-  Dados pessoa_lida;
+  Dados pessoa_lida; //Forma como os dados do struct serão lidos pelo código dentro da função
   
-
+  //Se o aruivo não existir para a função
   if (f == NULL) {
       perror("Erro ao abrir o arquivo");
       printf("Erro Ao Abrir O Arquivo\n");
   }
-  
+  //Enquanto o arquivo não for inteiramente lido, o while não para
   while (fread(&pessoa_lida, sizeof(Dados), 1, f) == 1) {
     if(strcmp(pessoa_lida.CPF,CPF)==0 && strcmp(pessoa_lida.Senha,senha)==0){
         pessoa_lida.Saldo = pessoa_lida.Saldo - qtd;
@@ -128,6 +129,7 @@ void debitar(double qtd,char *CPF,char *senha){
       }
     
   }
+  //Em caso de a(s) informação(ões) estiver(em) incorreta(s) ou inexistente(s), informa o usuaria com as mensagens
   if(v==0){
     printf("----------------------------\n\n");
     printf("CPF E/Ou Senha Incorreto(s)\n");
@@ -139,17 +141,19 @@ void debitar(double qtd,char *CPF,char *senha){
 }
 
 void transferencia(double qtd,char *cpfa, char *cpfd,char *senha){
-    int v = 0; // Int verificadora
+    int v = 0; // Int verifica de a primeira condição foi cumprida
     FILE* f = fopen("dados.bin", "rb+");
 
-    Dados pessoa_lida;
+    Dados pessoa_lida;  //Forma como os dados do struct serão lidos pelo código dentro da função
 
     if (f == NULL) {
         perror("Erro ao abrir o arquivo");
         printf("Erro Ao Abrir O Arquivo\n");
         return;
     }
-
+    //Enquanto o arquivo não for inteiramente lido, o while não para
+    //Enquanto o CPF do usuario e sua senha não for encontrado, o arquivo também continuará a ser lido
+    //caso ele não seja encontado, a variavel verificadora não mudará de valor e não ativára o segundo loop
     while (fread(&pessoa_lida, sizeof(Dados), 1, f) == 1) {
         if (strcmp(pessoa_lida.CPF, cpfu) == 0 && strcmp(pessoa_lida.Senha, senha) == 0) {
             printf("Teste\n");
@@ -162,15 +166,24 @@ void transferencia(double qtd,char *cpfa, char *cpfd,char *senha){
     }
 
     rewind(f);  // Retorna o ponteiro de leitura para o início do arquivo
-
-    while (fread(&pessoa_lida, sizeof(Dados), 1, f) == 1) {
-        if (strcmp(pessoa_lida.CPF, cpfd) == 0 && v == 1) {
-            printf("Teste\n");
-            pessoa_lida.Saldo = pessoa_lida.Saldo + qtd;
-            fseek(f, -sizeof(Dados), SEEK_CUR);
-            fwrite(&pessoa_lida, sizeof(Dados), 1, f);
-            break;
+    if(v==1){
+        //Enquanto o arquivo não for inteiramente lido, o while não para
+        //Enquanto não for achado o CPF do destinatário o loop não para
+        while (fread(&pessoa_lida, sizeof(Dados), 1, f) == 1) {
+            if (strcmp(pessoa_lida.CPF, cpfd) == 0) {
+                printf("Teste\n");
+                pessoa_lida.Saldo = pessoa_lida.Saldo + qtd;
+                fseek(f, -sizeof(Dados), SEEK_CUR);
+                fwrite(&pessoa_lida, sizeof(Dados), 1, f);
+                break;
+            }
         }
+    }
+    else{
+        printf("\n----------------------------\n\n");
+        printf("CPF Do Usuário E/Ou Senha Incorretos E/Ou\n");
+        printf("CPF De Destinatário Incorreto\n");
+        printf("----------------------------\n\n");
     }
 
     fclose(f);
