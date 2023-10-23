@@ -106,4 +106,34 @@ void listar(){
 
 }
 
-void debitar(double qtd,char *CPF,char *senha)
+void debitar(double qtd,char *CPF,char *senha){
+  int v=0;//Verifica se foram encontrados os dados
+  FILE* f = fopen("dados.bin","rb+");
+
+  Dados pessoa_lida;
+  
+
+  if (f == NULL) {
+      perror("Erro ao abrir o arquivo");
+      printf("Erro Ao Abrir O Arquivo\n");
+  }
+  
+  while (fread(&pessoa_lida, sizeof(Dados), 1, f) == 1) {
+    if(strcmp(pessoa_lida.CPF,CPF)==0 && strcmp(pessoa_lida.Senha,senha)==0){
+        pessoa_lida.Saldo = pessoa_lida.Saldo - qtd;
+        fseek(f,-sizeof(Dados),SEEK_CUR);
+        fwrite(&pessoa_lida,sizeof(Dados),1,f);
+        v=1;
+        break;
+      }
+    
+  }
+  if(v==0){
+    printf("----------------------------\n\n");
+    printf("CPF E/Ou Senha Incorreto(s)\n");
+    printf("Tente Novamente\n\n");
+    printf("----------------------------\n\n");
+  }
+  fclose(f);
+  
+}
