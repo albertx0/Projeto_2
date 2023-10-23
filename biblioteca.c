@@ -19,12 +19,15 @@ Clientes* leitura(char *nome_arquivo) {
 
 void escreve(Clientes *clientes , char *nome_arquivo) {
     FILE *f = fopen(nome_arquivo, "w"); // Realiza a abertura do arquivo com o objetivo de escrever todas as possiveis tarefas feitas pelo usuario
-    fwrite(clientes, sizeof(Clientes), 100, f); // Escreve as tarefas
+
+    fwrite(clientes, sizeof(Clientes), clientes->qtd , f); // Escreve as tarefas
+
     fclose(f); // Fecha o arquivo
 }
 
 
 void menu(){
+    printf("Bem vindo ao banco QuemPoupaTem !");
     printf("1 - Cadastrar Clientes.\n");
     printf("2 - Apagar Cliente.\n");
     printf("3 - Listar todos os clientes.\n");
@@ -48,35 +51,7 @@ Clientes* cadastrar(Clientes* usuarios, char *nome, double saldo_inicial, char *
     usuarios->lista[nova_posicao].Saldo = saldo_inicial;
     strcpy(usuarios->lista[nova_posicao].Senha, senha);
     usuarios->qtd++;
-    /*
-    // Verifica se as strings não excedem os limites de caracteres
-    if (strlen(nome) >= 100 || strlen(CPF) >= 15 || strlen(tc) >= 10 || strlen(senha) >= 50) {
-        printf("Erro: uma ou mais strings ultrapassaram os limites de tamanho.\n");
-        return;
-    }
 
-    */
-    /*
- // Abre o arquivo para escrita binária
-    FILE *arquivo = fopen("dados.bin", "ab");
-
-    if (arquivo == NULL) {
-        perror("Erro ao abrir o arquivo");
-        printf("Erro Ao Abrir o Arquivo\n");
-    }
-
-    // Escreve a estrutura no arquivo
-    size_t elementos_gravados = fwrite(&pessoa, sizeof(Dados), 1, arquivo);
-
-    if (elementos_gravados != 1) {
-        printf("Erro ao escrever no arquivo.\n");
-        fclose(arquivo);
-        // Termina a execução em caso de erro
-    }
-
-    // Fechando o arquivo
-    fclose(arquivo);
-    */
     return usuarios;
 }
 
@@ -84,17 +59,16 @@ Clientes* deletar_cliente(Clientes* usuarios , char* CPF){
     Clientes* usuarios_temp = (Clientes*)malloc(1000*sizeof(Clientes));
 
     int posicao = buscaCPF(usuarios , CPF);
-
+    printf("aq aq %d\n" , posicao);
     if(usuarios->qtd == 0){
         printf("==============\n");
         printf("Nenhum usuario cadastro no banco\n");
         printf("==============\n");
         return usuarios;
-     
 
     }else if(posicao == -1){
         printf("==============\n");
-        printf("Nenhum usuario cadastro com o CPF digitado.\n");
+        printf("Nenhum usuario cadastro com o CPF digitado, tente novamente.\n");
         printf("==============\n");
         return usuarios;
 
@@ -115,30 +89,31 @@ Clientes* deletar_cliente(Clientes* usuarios , char* CPF){
         printf("Cliente apagado com sucesso !\n");
         printf("==============\n");
 
+        usuarios_temp->qtd = cont;
 
         return usuarios_temp;
     }
 }
 
-void listar_clientes(Clientes* usuarios){
+void listar_clientes(Clientes* usuarios) {
 
-    if(usuarios->qtd == 0){
-
+    if (usuarios->qtd == 0) {
         printf("\n==============\n");
         printf("Nenhum usuario cadastrado no banco\n");
         printf("==============\n");
-    }else{
+    } else {
         printf("\n==============\n");
 
 
-        for(int i = 0 ; i < usuarios->qtd ; i++){
-            printf("Nome: %s\n" , usuarios->lista[i].nome);
-            printf("CPF: %s\n" , usuarios->lista[i].CPF);
-            printf("Tipo de conta: %s\n\n" , usuarios->lista[i].Tipo_conta);
+        for (int i = 0; i < usuarios->qtd; i++) {
+            printf("Cliente %d:\n" , i+1);
+            printf("Nome: %s\n", usuarios->lista[i].nome);
+            printf("CPF: %s\n", usuarios->lista[i].CPF);
+            printf("Tipo de conta: %s\n\n", usuarios->lista[i].Tipo_conta);
         }
-
         printf("==============\n");
-
+    }
+}
 
 void debitar(double qtd,char *CPF,char *senha){
   int v=0;//Verifica se foram encontrados os dados
@@ -233,32 +208,30 @@ char* input(char *str){
 
     return str;
 }
-=======
-    }
-}
 
 Clientes* deposita(Clientes* usuarios , char* CPF , double valor){
 
     int posicao = buscaCPF(usuarios , CPF);
-    double taxas;
 
     if(posicao == -1){
         printf("==============\n");
         printf("Nenhum cliente cadastrado com o CPF digitado.\n");
         printf("==============\n");
+
+        return usuarios;
     }else {
+        double taxas;
         if (strcmp(usuarios->lista[posicao].Tipo_conta, "Comum") == 0 || strcmp(usuarios->lista[posicao].Tipo_conta, "comum") == 0) {
             taxas = valor * 0.95;
         } else {
             taxas = valor * 0.97;
         }
+        usuarios->lista[posicao].extrato[usuarios->lista[posicao].qtd_extrato] = adiciona_transacao("Deposito", valor, taxas);
+        usuarios->lista[posicao].qtd_extrato++;
+
+        printf("Operacao feita com sucesso !\n");
+        return usuarios;
     }
-
-    usuarios->lista[posicao].extrato[usuarios->lista[posicao].qtd_extrato] = adiciona_transacao("Deposito", valor, taxas);
-
-    usuarios->lista[posicao].qtd_extrato++;
-
-    return usuarios;
 }
 
 Extrato adiciona_transacao(char* operacao , double valor , double taxa){
@@ -296,8 +269,6 @@ int buscaCPF(Clientes* usuarios, char* CPF){
     return -1;
 }
 
-
-
 int buscaSenha(Clientes* usuarios , char* Senha){
 
     for(int i = 0 ; i < usuarios->qtd ; i++){
@@ -305,7 +276,7 @@ int buscaSenha(Clientes* usuarios , char* Senha){
             return 1;
         }
     }
-
     return 0;
 }
+
 

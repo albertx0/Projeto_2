@@ -8,19 +8,22 @@ int main(){
   double saldo;
   char senha[50];
   int opcao=0; //Variavel de seleção
-  double qtd=0;//Quantidade à serem debitadas ou transferidas
+  double valor_operacao;//Quantidade à serem debitadas ou transferidas
   
   Clientes* lista_clientes = leitura("arquivo_clientes.txt");
 
   printf("tam = %d\n" , lista_clientes->qtd);
-  
-  do{
+
+
+
+    do{
 
     menu();
     scanf("%d",&opcao);
 
     while (getchar() != '\n');
     if(opcao==1){
+        printf("==============\n");
         printf("Digite o nome do cliente: ");
         input(nome);
         printf("Digite o CPF do cliente: ");
@@ -32,6 +35,7 @@ int main(){
         printf("Digite o saldo inicial da conta: ");
         scanf("%lf", &saldo);
         cadastrar(lista_clientes , nome,saldo,CPF,tipo_conta,senha);
+        printf("==============\n");
     }
     else if(opcao==2){
         printf("Digite o CPF do cliente que deseja apagar: ");
@@ -47,8 +51,14 @@ int main(){
       printf("Digite sua senha: ");
       input(senha);
       printf("Digite o valor a ser debitado da conta: ");
-      scanf("%lf",&qtd);
-      debitar( qtd , CPF , senha);
+      scanf("%lf",&valor_operacao);
+      debitar( valor_operacao , CPF , senha);
+    }else if(opcao == 5){
+        printf("Digite seu CPF: ");
+        input(CPF);
+        printf("Digite o valor que deseja depositar em sua conta: ");
+        scanf("%lf" , &valor_operacao);
+        lista_clientes = deposita(lista_clientes , CPF ,valor_operacao);
     }
     else if(opcao==7){
       printf("Digite O Seu CPF: ");
@@ -58,15 +68,15 @@ int main(){
       printf("Digite O CPF Do Destinatario: ");
       input(CPF_destinatario);
       printf("Digite A Quantidade A Ser Tranferida: ");
-      scanf("%lf",&qtd);
-      transferencia(qtd ,CPF ,CPF_destinatario ,senha);
+      scanf("%lf",&valor_operacao);
+      transferencia(valor_operacao ,CPF ,CPF_destinatario ,senha);
     }
 
     printf("\n");
-  }while(opcao!=8);
+  }while(opcao !=8 );
 
   escreve(lista_clientes , "arquivo_clientes.txt");
-  printf("Obrigado Por Escolher Quem Poupa Tem!\n");
+  printf("Obrigado Por Escolher QuemPoupaTem!\n");
   
   
     return 0;
