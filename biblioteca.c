@@ -27,7 +27,6 @@ void escreve(Clientes *clientes , char *nome_arquivo) {
 
 
 void menu(){
-    printf("Bem vindo ao banco QuemPoupaTem !");
     printf("1 - Cadastrar Clientes.\n");
     printf("2 - Apagar Cliente.\n");
     printf("3 - Listar todos os clientes.\n");
@@ -42,21 +41,32 @@ void menu(){
 
 Clientes* cadastrar(Clientes* usuarios, char *nome, double saldo_inicial, char *CPF, char *tipo_conta, char *senha){
 
-    int nova_posicao = usuarios->qtd;
+    if(buscaCPF(usuarios , CPF) == -1){
+        int nova_posicao = usuarios->qtd;
 
-    //Copia as variaveis do struct para as variaveis da função
-    strcpy(usuarios->lista[nova_posicao].nome , nome);
-    strcpy(usuarios->lista[nova_posicao].CPF, CPF);
-    strcpy(usuarios->lista[nova_posicao].Tipo_conta, tipo_conta);
-    usuarios->lista[nova_posicao].Saldo = saldo_inicial;
-    strcpy(usuarios->lista[nova_posicao].Senha, senha);
-    usuarios->qtd++;
+        //Copia as variaveis do struct para as variaveis da função
+        strcpy(usuarios->lista[nova_posicao].nome , nome);
+        strcpy(usuarios->lista[nova_posicao].CPF, CPF);
+        strcpy(usuarios->lista[nova_posicao].Tipo_conta, tipo_conta);
+        usuarios->lista[nova_posicao].Saldo = saldo_inicial;
+        strcpy(usuarios->lista[nova_posicao].Senha, senha);
+        usuarios->qtd++;
+
+        printf("\n==============\n");
+        printf("Cliente cadastrado com sucesso.\n");
+        printf("==============\n");
+    }else{
+        printf("\n==============\n");
+        printf("O banco ja possui um cliente cadastrado com este CPF, tente novamente.\n");
+        printf("==============\n");
+    }
 
     return usuarios;
 }
 
 Clientes* deletar_cliente(Clientes* usuarios , char* CPF){
-    Clientes* usuarios_temp = (Clientes*)malloc(1000*sizeof(Clientes));
+    Clientes* usuarios_temp = (Clientes*)malloc(sizeof(Clientes) * usuarios->qtd);
+
 
     int posicao = buscaCPF(usuarios , CPF);
     printf("aq aq %d\n" , posicao);
@@ -71,17 +81,18 @@ Clientes* deletar_cliente(Clientes* usuarios , char* CPF){
         printf("Nenhum usuario cadastro com o CPF digitado, tente novamente.\n");
         printf("==============\n");
         return usuarios;
-
     }else {
         int cont = 0;
 
-        for (int i = 0; i < usuarios->qtd; i++) {
+        for (int i = 0 ; i < usuarios->qtd ; i++) {
+
             if (i != posicao) {
                 strcpy(usuarios_temp->lista[cont].nome, usuarios->lista[i].nome);
                 strcpy(usuarios_temp->lista[cont].CPF, usuarios->lista[i].CPF);
                 strcpy(usuarios_temp->lista[cont].Tipo_conta, usuarios->lista[i].Tipo_conta);
-                usuarios_temp->lista[cont].Saldo = usuarios_temp->lista[cont].Saldo;
+                usuarios_temp->lista[cont].Saldo = usuarios_temp->lista[i].Saldo;
                 strcpy(usuarios_temp->lista[cont].Senha, usuarios->lista[i].Senha);
+
                 cont++;
             }
         }
@@ -115,36 +126,11 @@ void listar_clientes(Clientes* usuarios) {
     }
 }
 
-void debitar(double qtd,char *CPF,char *senha){
-  int v=0;//Verifica se foram encontrados os dados
-  FILE* f = fopen("dados.bin","rb+");
+void debitar(Clientes* usuarios , double valor_debito , char* CPF , char* Senha){
 
-  Dados pessoa_lida; //Forma como os dados do struct serão lidos pelo código dentro da função
+    int posicao_cliente = buscaCPF(usuarios , CPF);
 
-  //Se o aruivo não existir para a função
-  if (f == NULL) {
-      perror("Erro ao abrir o arquivo");
-      printf("Erro Ao Abrir O Arquivo\n");
-  }
-  //Enquanto o arquivo não for inteiramente lido, o while não para
-  while (fread(&pessoa_lida, sizeof(Dados), 1, f) == 1) {
-    if(strcmp(pessoa_lida.CPF,CPF)==0 && strcmp(pessoa_lida.Senha,senha)==0){
-        pessoa_lida.Saldo = pessoa_lida.Saldo - qtd;
-        fseek(f,sizeof(Dados),SEEK_CUR);
-        fwrite(&pessoa_lida,sizeof(Dados),1,f);
-        v=1;
-        break;
-      }
 
-  }
-  //Em caso de a(s) informação(ões) estiver(em) incorreta(s) ou inexistente(s), informa o usuaria com as mensagens
-  if(v==0){
-    printf("----------------------------\n\n");
-    printf("CPF E/Ou Senha Incorreto(s)\n");
-    printf("Tente Novamente\n\n");
-    printf("----------------------------\n\n");
-  }
-  fclose(f);
 
 }
 
@@ -269,14 +255,24 @@ int buscaCPF(Clientes* usuarios, char* CPF){
     return -1;
 }
 
-int buscaSenha(Clientes* usuarios , char* Senha){
+int buscaSenha(Clientes* usuarios , int posicao_cliente , char* Senha){
 
-    for(int i = 0 ; i < usuarios->qtd ; i++){
-        if(strcmp(usuarios->lista[i].Senha , Senha) == 0){
-            return 1;
-        }
+    if(strcmp(usuarios->lista[posicao_cliente].Senha , Senha) == 0){
+        return 1;
     }
     return 0;
 }
 
-
+int verifica_saldo(char* Tipo_conta , double saldo_atual , double valor_operacao){
+    if(Tipo_conta == "Comum" || Tipo_conta == "comum"){
+        if(saldo_atual - valor_operacao <= -1000)
+            return 1;
+        else
+            return 0;
+    }else{
+        if(saldo_atual - valor_operacao <= -5000)
+            return 1;
+        else
+            return 0;
+    }
+}

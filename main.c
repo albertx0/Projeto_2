@@ -13,10 +13,10 @@ int main(){
   Clientes* lista_clientes = leitura("arquivo_clientes.txt");
 
   printf("tam = %d\n" , lista_clientes->qtd);
-  printf("teste\n");
 
 
 
+    printf("Bem vindo ao banco QuemPoupaTem !\n");
     do{
 
     menu();
@@ -24,7 +24,8 @@ int main(){
 
     while (getchar() != '\n');
     if(opcao==1){
-        printf("==============\n");
+        printf("\n==============\n");
+        printf("Opcao cadastro: \n");
         printf("Digite o nome do cliente: ");
         input(nome);
         printf("Digite o CPF do cliente: ");
@@ -36,7 +37,6 @@ int main(){
         printf("Digite o saldo inicial da conta: ");
         scanf("%lf", &saldo);
         cadastrar(lista_clientes , nome,saldo,CPF,tipo_conta,senha);
-        printf("==============\n");
     }
     else if(opcao==2){
         printf("Digite o CPF do cliente que deseja apagar: ");

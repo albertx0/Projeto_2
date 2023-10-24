@@ -48,6 +48,7 @@ void listar();
 void listar_clientes(Clientes* usuarios);
 void debitar(double qtd,char *CPF,char *senha);
 void transferencia(double qtd,char *cpfa, char *cpfd,char *senha);
+int verifica_saldo(char* Tipo_conta , double saldo_atual , double valor_operacao);
 void menu();
 char* input(char *str);
 
@@ -56,6 +57,7 @@ char* input(char *str);
 
 Clientes* deposita(Clientes* usuarios , char* CPF , double valor);
 int buscaCPF(Clientes* usuarios, char* CPF);
+int buscaSenha(Clientes* usuarios , int posicao_cliente , char* Senha);
 Extrato adiciona_transacao(char* operacao , double valor , double taxa);
 
 
