@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+
+
 typedef struct {
     char operacao[20];
     double valor;
@@ -42,23 +44,19 @@ typedef struct{
 
 Clientes* leitura(char *nome);
 void escreve(Clientes *v , char *nome);
-Clientes* cadastrar(Clientes* usuarios, char *nome, double saldo_inicial, char *CPF, char *tipo_conta, char *senha);
-Clientes* deletar_cliente(Clientes* usuarios , char* CPF);
-void listar();
+int menu();
+Clientes* cadastrar(Clientes* usuarios);
+Clientes* deletar_cliente(Clientes* usuarios);
 void listar_clientes(Clientes* usuarios);
-void debitar(double qtd,char *CPF,char *senha);
-void transferencia(double qtd,char *cpfa, char *cpfd,char *senha);
-int verifica_saldo(char* Tipo_conta , double saldo_atual , double valor_operacao);
-void menu();
+Clientes* debitar(Clientes* usuarios);
+Clientes* transferencia(Clientes* usuarios);
+Clientes* deposita(Clientes* usuarios);
 char* input(char *str);
-
-
-
-
-Clientes* deposita(Clientes* usuarios , char* CPF , double valor);
+int verifica_saldo(char* Tipo_conta , double saldo_atual , double valor_operacao);
+Extrato adiciona_transacao(char* operacao , double valor , double taxa);
 int buscaCPF(Clientes* usuarios, char* CPF);
 int buscaSenha(Clientes* usuarios , int posicao_cliente , char* Senha);
-Extrato adiciona_transacao(char* operacao , double valor , double taxa);
+
 
 
 
