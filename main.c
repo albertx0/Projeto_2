@@ -13,6 +13,7 @@ int main(){
   Clientes* lista_clientes = leitura("arquivo_clientes.txt");
 
   printf("tam = %d\n" , lista_clientes->qtd);
+  printf("teste\n");
 
 
 
