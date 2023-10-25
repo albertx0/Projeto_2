@@ -12,8 +12,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-
-
 typedef struct {
     char Operacao[20];
     double Valor;

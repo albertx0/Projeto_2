@@ -1,4 +1,4 @@
- #include "biblioteca.h"
+#include "biblioteca.h"
 
 int main(){
 
@@ -37,6 +37,7 @@ int main(){
   }while(opcao != 8);
 
   escreve(lista_clientes , "arquivo_clientes.txt");
+
   printf("Obrigado Por Escolher QuemPoupaTem!\n");
   
   
