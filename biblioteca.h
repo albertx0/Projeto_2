@@ -18,12 +18,15 @@ typedef struct {
     char Operacao[20];
     double Valor;
     double Taxa;
+    char Data_Hora[30];
+    /*
     int Hora;
     int Minuto;
     int Segundo;
     int Dia;
     int Mes;
     int Ano;
+     */
 } Extrato;
 
 typedef struct{

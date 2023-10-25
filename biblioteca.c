@@ -265,7 +265,7 @@ void listar_extrato(Clientes* usuarios){
                 printf("Operacao realizada: %s\n"  , usuarios->lista[posicao_cliente].extrato[i].Operacao);
                 printf("Valor movimentado: R$ %.2lf\n"  , usuarios->lista[posicao_cliente].extrato[i].Valor);
                 printf("Taxa aplicada na operacao: R$ %.2lf\n"  , usuarios->lista[posicao_cliente].extrato[i].Taxa);
-                printf("Data: %d/%d/%d %d:%d:%d\n"  , usuarios->lista[posicao_cliente].extrato[i].Dia , usuarios->lista[posicao_cliente].extrato[i].Mes , usuarios->lista[posicao_cliente].extrato[i].Ano , usuarios->lista[posicao_cliente].extrato[i].Hora , usuarios->lista[posicao_cliente].extrato[i].Minuto , usuarios->lista[posicao_cliente].extrato[i].Segundo);
+                printf("Data: %s\n"  , usuarios->lista[posicao_cliente].extrato[i].Data_Hora);
             }
         }else{
             printf("Senha incorreta.\n");
@@ -300,20 +300,6 @@ Extrato adiciona_transacao(char* operacao , double valor , double taxa){
     strcpy(stc_temp.Operacao, operacao);
     stc_temp.Valor = valor;
     stc_temp.Taxa = taxa;
-
-    struct tm *p;
-    time_t seconds;
-
-    time(&seconds);
-    p = localtime(&seconds);
-
-    stc_temp.Hora = p->tm_hour;
-    stc_temp.Minuto = p->tm_min;
-    stc_temp.Segundo = p->tm_sec;
-
-    stc_temp.Dia = p->tm_mday;
-    stc_temp.Mes = p->tm_mon + 1;
-    stc_temp.Ano = p->tm_year + 1900;
 
     return stc_temp;
 }
