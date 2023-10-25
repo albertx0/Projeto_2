@@ -15,15 +15,15 @@
 
 
 typedef struct {
-    char operacao[20];
-    double valor;
-    double taxa;
-    int hora;
-    int minuto;
-    int segundo;
-    int dia;
-    int mes;
-    int ano;
+    char Operacao[20];
+    double Valor;
+    double Taxa;
+    int Hora;
+    int Minuto;
+    int Segundo;
+    int Dia;
+    int Mes;
+    int Ano;
 } Extrato;
 
 typedef struct{
@@ -32,8 +32,8 @@ typedef struct{
     char Tipo_conta[10];
     double Saldo;
     char Senha[50];
-    int qtd_extrato;
     Extrato extrato[1000];
+    int qtd_extrato;
 } Dados;
 
 typedef struct{
@@ -51,6 +51,7 @@ void listar_clientes(Clientes* usuarios);
 Clientes* debitar(Clientes* usuarios);
 Clientes* transferencia(Clientes* usuarios);
 Clientes* deposita(Clientes* usuarios);
+void listar_extrato(Clientes* usuarios);
 char* input(char *str);
 int verifica_saldo(char* Tipo_conta , double saldo_atual , double valor_operacao);
 Extrato adiciona_transacao(char* operacao , double valor , double taxa);

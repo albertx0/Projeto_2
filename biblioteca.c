@@ -34,6 +34,7 @@ void escreve(Clientes *clientes , char *nome_arquivo) {
 }
 
 
+
 int menu(){
     printf("1 - Cadastrar Clientes.\n");
     printf("2 - Apagar Cliente.\n");
@@ -75,7 +76,7 @@ Clientes* cadastrar(Clientes* usuarios){
         usuarios->lista[nova_posicao].Saldo = Saldo;
         strcpy(usuarios->lista[nova_posicao].Senha, Senha_Cliente);
         usuarios->qtd++;
-
+        usuarios->lista[nova_posicao].qtd_extrato = 0;
         printf("\n==============\n");
         printf("Cliente cadastrado com sucesso.\n");
         printf("==============\n");
@@ -220,26 +221,55 @@ Clientes* deposita(Clientes* usuarios){
     printf("Digite o valor que deseja depositar em sua conta: ");
     scanf("%lf" , &Valor_Operacao);
 
-    int posicao = buscaCPF(usuarios , CPF_Cliente);
+    int posicao_cliente = buscaCPF(usuarios , CPF_Cliente);
 
-    if(posicao == -1){
+
+    if(posicao_cliente == -1){
         printf("==============\n");
         printf("Nenhum cliente cadastrado com o CPF digitado.\n");
         printf("==============\n");
 
         return usuarios;
     }else {
-        double taxas;
-        if (strcmp(usuarios->lista[posicao].Tipo_conta, "Comum") == 0 || strcmp(usuarios->lista[posicao].Tipo_conta, "comum") == 0) {
-            taxas = Valor_Operacao * 0.95;
-        } else {
-            taxas = Valor_Operacao * 0.97;
-        }
-        usuarios->lista[posicao].extrato[usuarios->lista[posicao].qtd_extrato] = adiciona_transacao("Deposito", Valor_Operacao, taxas);
-        usuarios->lista[posicao].qtd_extrato++;
+        int posicao_extrato = usuarios->lista[posicao_cliente].qtd_extrato;
+        printf("aq pospos %d\n", usuarios->qtd);
+        usuarios->lista[posicao_cliente].Saldo += Valor_Operacao;
+
+        usuarios->lista[posicao_cliente].extrato[posicao_extrato] = adiciona_transacao("Deposita" , Valor_Operacao , 0);
+        usuarios->lista[posicao_cliente].qtd_extrato++;
+        printf("aq pospos %d\n", usuarios->qtd);
 
         printf("Operacao feita com sucesso !\n");
         return usuarios;
+    }
+}
+
+void listar_extrato(Clientes* usuarios){
+    printf("Digite seu CPF: ");
+    input(CPF_Cliente);
+
+
+    int posicao_cliente = buscaCPF(usuarios , CPF_Cliente);
+
+
+    if(posicao_cliente == -1){
+        printf("Nenhum cliente cadastrado com esse CPF\n");
+    }else{
+        printf("Digite sua senha: ");
+        input(Senha_Cliente);
+
+        printf("Nome: %s\n" , usuarios->lista[posicao_cliente].nome);
+
+        if(buscaSenha(usuarios , posicao_cliente , Senha_Cliente) == 1){
+            for(int i = 0 ; i < usuarios->lista[posicao_cliente].qtd_extrato; i++){
+                printf("Operacao realizada: %s\n"  , usuarios->lista[posicao_cliente].extrato[i].Operacao);
+                printf("Valor movimentado: R$ %.2lf\n"  , usuarios->lista[posicao_cliente].extrato[i].Valor);
+                printf("Taxa aplicada na operacao: R$ %.2lf\n"  , usuarios->lista[posicao_cliente].extrato[i].Taxa);
+                printf("Data: %d/%d/%d %d:%d:%d\n"  , usuarios->lista[posicao_cliente].extrato[i].Dia , usuarios->lista[posicao_cliente].extrato[i].Mes , usuarios->lista[posicao_cliente].extrato[i].Ano , usuarios->lista[posicao_cliente].extrato[i].Hora , usuarios->lista[posicao_cliente].extrato[i].Minuto , usuarios->lista[posicao_cliente].extrato[i].Segundo);
+            }
+        }else{
+            printf("Senha incorreta.\n");
+        }
     }
 }
 
@@ -267,9 +297,9 @@ int verifica_saldo(char* Tipo_conta , double saldo_atual , double valor_operacao
 
 Extrato adiciona_transacao(char* operacao , double valor , double taxa){
     Extrato stc_temp;
-    strcpy(stc_temp.operacao, operacao);
-    stc_temp.valor = valor;
-    stc_temp.taxa = taxa;
+    strcpy(stc_temp.Operacao, operacao);
+    stc_temp.Valor = valor;
+    stc_temp.Taxa = taxa;
 
     struct tm *p;
     time_t seconds;
@@ -277,13 +307,13 @@ Extrato adiciona_transacao(char* operacao , double valor , double taxa){
     time(&seconds);
     p = localtime(&seconds);
 
-    stc_temp.hora = p->tm_hour;
-    stc_temp.minuto = p->tm_min;
-    stc_temp.segundo = p->tm_sec;
+    stc_temp.Hora = p->tm_hour;
+    stc_temp.Minuto = p->tm_min;
+    stc_temp.Segundo = p->tm_sec;
 
-    stc_temp.dia = p->tm_mday;
-    stc_temp.mes = p->tm_mon + 1;
-    stc_temp.ano = p->tm_year + 1900;
+    stc_temp.Dia = p->tm_mday;
+    stc_temp.Mes = p->tm_mon + 1;
+    stc_temp.Ano = p->tm_year + 1900;
 
     return stc_temp;
 }
