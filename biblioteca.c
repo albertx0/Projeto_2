@@ -29,7 +29,6 @@ void escreve(Clientes *clientes , char *nome_arquivo) {
     FILE *f = fopen(nome_arquivo, "w"); // Realiza a abertura do arquivo com o objetivo de escrever todas as possiveis tarefas feitas pelo usuario
 
     fwrite(clientes, sizeof(Clientes), clientes->qtd , f); // Escreve as tarefas
-
     fclose(f); // Fecha o arquivo
 }
 
@@ -50,57 +49,67 @@ int menu(){
 
 Clientes* cadastrar(Clientes* usuarios){
 
+    int verifica;
+
     printf("\n==============\n");
     printf("Opcao cadastro: \n");
+
     printf("Digite o nome do cliente: ");
     input(Nome_Cliente);
     printf("Digite o CPF do cliente: ");
     input(CPF_Cliente);
+    do{
+        verifica = buscaCPF(usuarios , CPF_Cliente);
+        if(verifica != -1){
+            printf("CPF ja existente no banco, digite novamente: ");
+            input(CPF_Cliente);
+        }
+    }while(verifica != -1);
+
     printf("Digite a senha do cliente: ");
     input(Senha_Cliente);
-    printf("Digite o tipo de conta do cliente: ");
+
+    printf("Digite o tipo de conta do cliente (Comum / Plus) : ");
     input(Tipo_Conta);
+
     printf("Digite o saldo inicial da conta: ");
     scanf("%lf", &Saldo);
 
-    if(buscaCPF(usuarios , CPF_Cliente) == -1){
-        int nova_posicao = usuarios->qtd;
+    int nova_posicao = usuarios->qtd;
 
-        //Copia as variaveis do struct para as variaveis da função
-        strcpy(usuarios->lista[nova_posicao].nome , Nome_Cliente);
-        strcpy(usuarios->lista[nova_posicao].CPF, CPF_Cliente);
-        strcpy(usuarios->lista[nova_posicao].Tipo_conta, Tipo_Conta);
-        usuarios->lista[nova_posicao].Saldo = Saldo;
-        strcpy(usuarios->lista[nova_posicao].Senha, Senha_Cliente);
-        usuarios->qtd++;
-        usuarios->lista[nova_posicao].qtd_extrato = 0;
-        printf("\n==============\n");
-        printf("Cliente cadastrado com sucesso.\n");
-        printf("==============\n");
-    }else{
-        printf("\n==============\n");
-        printf("O banco ja possui um cliente cadastrado com este CPF, tente novamente.\n");
-        printf("==============\n");
-    }
+    //Copia as variaveis do struct para as variaveis da função
+    strcpy(usuarios->lista[nova_posicao].nome , Nome_Cliente);
+    strcpy(usuarios->lista[nova_posicao].CPF, CPF_Cliente);
+    strcpy(usuarios->lista[nova_posicao].Tipo_conta, Tipo_Conta);
+    usuarios->lista[nova_posicao].Saldo = Saldo;
+    strcpy(usuarios->lista[nova_posicao].Senha, Senha_Cliente);
+    usuarios->qtd++;
+    usuarios->lista[nova_posicao].qtd_extrato = 0;
+    printf("\n==============\n");
+    printf("Cliente cadastrado com sucesso.\n");
+    printf("==============\n");
 
     return usuarios;
 }
 
 Clientes* deletar_cliente(Clientes* usuarios){
-    printf("Digite o CPF do cliente que deseja apagar: ");
-    input(CPF_Cliente);
 
-    Clientes* usuarios_temp = (Clientes*)malloc(sizeof(Clientes) * usuarios->qtd);
-
-    int posicao = buscaCPF(usuarios , CPF_Cliente);
-    printf("aq aq %d\n" , posicao);
     if(usuarios->qtd == 0){
         printf("==============\n");
         printf("Nenhum usuario cadastro no banco\n");
         printf("==============\n");
         return usuarios;
 
-    }else if(posicao == -1){
+    }
+
+    printf("Digite o CPF do cliente que deseja apagar: ");
+    input(CPF_Cliente);
+
+    Clientes* usuarios_temp = (Clientes*)malloc(sizeof(Clientes) * usuarios->qtd);
+
+    int posicao = buscaCPF(usuarios , CPF_Cliente);
+
+    if(posicao == -1){
         printf("==============\n");
         printf("Nenhum usuario cadastro com o CPF digitado, tente novamente.\n");
         printf("==============\n");
@@ -152,7 +161,7 @@ void listar_clientes(Clientes* usuarios) {
 
 Clientes* transferencia(Clientes* usuarios) {
 
-    double Valor_com_Taxas;
+    double Taxas;
     printf("Digite O Seu CPF: ");
     input(CPF_Cliente);
     printf("Digite Sua Senha: ");
@@ -182,13 +191,22 @@ Clientes* transferencia(Clientes* usuarios) {
             printf("==============\n");
             return usuarios;
         }else if(tipo_cliente == 1){
-            Valor_com_Taxas = Valor_Operacao * 1.05;
+            Taxas = Valor_Operacao * 0.05;
         }else if(tipo_cliente == 2){
-            Valor_com_Taxas = Valor_Operacao * 1.03;
+            Taxas = Valor_Operacao * 0.03;
         }
 
-        usuarios->lista[posicao_cliente_origem].Saldo -= Valor_com_Taxas;
+        usuarios->lista[posicao_cliente_origem].Saldo -= (Valor_Operacao + Taxas);
         usuarios->lista[posicao_cliente_destino].Saldo += Valor_Operacao;
+
+        int posicao_extrato_origem = usuarios->lista[posicao_cliente_origem].qtd_extrato;
+        usuarios->lista[posicao_cliente_origem].qtd_extrato++;
+
+        int posicao_extrato_destino = usuarios->lista[posicao_cliente_destino].qtd_extrato;
+        usuarios->lista[posicao_cliente_destino].qtd_extrato++;
+
+        usuarios->lista[posicao_cliente_origem].extrato[posicao_extrato_origem] = adiciona_transacao("Transferencia" , "-" , Valor_Operacao , Taxas);
+        usuarios->lista[posicao_cliente_destino].extrato[posicao_extrato_destino] = adiciona_transacao("Transferencia" , "+" , Valor_Operacao , 0);
 
         return usuarios;
     }
@@ -197,7 +215,7 @@ Clientes* transferencia(Clientes* usuarios) {
 
 Clientes* debitar(Clientes* usuarios){
 
-    double Valor_com_Taxas;
+    double Taxas;
 
     printf("Digite seu CPF: ");
     input(CPF_Cliente);
@@ -216,18 +234,20 @@ Clientes* debitar(Clientes* usuarios){
         printf("==============\n");
     }else{
         if(tipo_cliente == 1){
-            Valor_com_Taxas = Valor_Operacao * 1.05;
+            Taxas = Valor_Operacao * 0.05;
         }else if(tipo_cliente == 2){
-            Valor_com_Taxas = Valor_Operacao * 1.03;
+            Taxas = Valor_Operacao * 0.03;
         }else{
             printf("==============\n");
             printf("Saldo insuficiente para realizar a operacao.\n");
             printf("==============\n");
         }
+        usuarios->lista[posicao_cliente].Saldo -= (Valor_Operacao + Taxas);
+
         int posicao_extrato = usuarios->lista[posicao_cliente].qtd_extrato;
         usuarios->lista[posicao_cliente].qtd_extrato++;
 
-        usuarios->lista[posicao_cliente].extrato[posicao_extrato] = adiciona_transacao("Deposita" , Valor_Operacao , Valor_com_Taxas);
+        usuarios->lista[posicao_cliente].extrato[posicao_extrato] = adiciona_transacao("Deposita" , "-" , Valor_Operacao , Taxas);
     }
 
     return usuarios;
@@ -249,9 +269,8 @@ Clientes* deposita(Clientes* usuarios){
         return usuarios;
     }else {
         int posicao_extrato = usuarios->lista[posicao_cliente].qtd_extrato;
-        printf("aq pospos %d\n", usuarios->qtd);
         usuarios->lista[posicao_cliente].Saldo += Valor_Operacao;
-        usuarios->lista[posicao_cliente].extrato[posicao_extrato] = adiciona_transacao("Deposita" , Valor_Operacao , 0);
+        usuarios->lista[posicao_cliente].extrato[posicao_extrato] = adiciona_transacao("Deposita" , "+" , Valor_Operacao , 0);
         usuarios->lista[posicao_cliente].qtd_extrato++;
         printf("Operacao feita com sucesso !\n");
         return usuarios;
@@ -274,12 +293,16 @@ void listar_extrato(Clientes* usuarios){
         printf("Nome: %s\n" , usuarios->lista[posicao_cliente].nome);
 
         if(buscaSenha(usuarios , posicao_cliente , Senha_Cliente) == 1){
+            printf("==============\n\n");
+            printf("Saldo Atual: R$ %.2lf\n\n" , usuarios->lista[posicao_cliente].Saldo);
             for(int i = 0 ; i < usuarios->lista[posicao_cliente].qtd_extrato; i++){
+                printf("Transacao %d:\n" , i+1);
                 printf("Operacao realizada: %s\n"  , usuarios->lista[posicao_cliente].extrato[i].Operacao);
-                printf("Valor movimentado: R$ %.2lf\n"  , usuarios->lista[posicao_cliente].extrato[i].Valor);
-                printf("Taxa aplicada na operacao: R$ %.2lf\n"  , usuarios->lista[posicao_cliente].extrato[i].Taxa);
-                printf("Data: %s\n"  , usuarios->lista[posicao_cliente].extrato[i].Data_Hora);
+                printf("Valor movimentado: R$ %s"  , usuarios->lista[posicao_cliente].extrato[i].Simbolo);
+                printf("%.2lf\n"  , usuarios->lista[posicao_cliente].extrato[i].Valor);
+                printf("Taxa aplicada na operacao: R$ %.2lf\n\n"  , usuarios->lista[posicao_cliente].extrato[i].Taxa);
             }
+            printf("==============\n\n");
         }else{
             printf("Senha incorreta.\n");
         }
@@ -308,13 +331,14 @@ int verifica_saldo(char* Tipo_conta , double saldo_atual , double valor_operacao
     }
 }
 
-Extrato adiciona_transacao(char* operacao , double valor , double taxa){
-    Extrato stc_temp;
-    strcpy(stc_temp.Operacao, operacao);
-    stc_temp.Valor = valor;
-    stc_temp.Taxa = taxa;
+Extrato adiciona_transacao(char* operacao , char* simbolo , double valor , double taxa){
+    Extrato trasacao_temp;
+    strcpy(trasacao_temp.Operacao, operacao);
+    strcpy(trasacao_temp.Simbolo, simbolo);
+    trasacao_temp.Valor = valor;
+    trasacao_temp.Taxa = taxa;
 
-    return stc_temp;
+    return trasacao_temp;
 }
 
 int buscaCPF(Clientes* usuarios, char* CPF){
@@ -324,7 +348,6 @@ int buscaCPF(Clientes* usuarios, char* CPF){
             return i;
         }
     }
-
     return -1;
 }
 

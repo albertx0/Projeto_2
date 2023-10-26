@@ -17,14 +17,7 @@ typedef struct {
     double Valor;
     double Taxa;
     char Data_Hora[30];
-    /*
-    int Hora;
-    int Minuto;
-    int Segundo;
-    int Dia;
-    int Mes;
-    int Ano;
-     */
+    char Simbolo[2];
 } Extrato;
 
 typedef struct{
@@ -55,7 +48,7 @@ Clientes* deposita(Clientes* usuarios);
 void listar_extrato(Clientes* usuarios);
 char* input(char *str);
 int verifica_saldo(char* Tipo_conta , double saldo_atual , double valor_operacao);
-Extrato adiciona_transacao(char* operacao , double valor , double taxa);
+Extrato adiciona_transacao(char* operacao , char* simbolo , double valor , double taxa);
 int buscaCPF(Clientes* usuarios, char* CPF);
 int buscaSenha(Clientes* usuarios , int posicao_cliente , char* Senha);
 
