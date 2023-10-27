@@ -50,8 +50,6 @@ int menu() { // Funcao de menu para exibir ao cliente todas as opcoes disponivei
 
 Clientes* cadastrar(Clientes* Clientes_Banco) { //Funcao para realizar o cadastro de novos clientes
 
-
-
     printf("\n==============\n");
     printf("Opcao cadastro: \n");
 
@@ -114,46 +112,43 @@ Clientes* deletar_cliente(Clientes* Clientes_Banco) { //Funcao para deletar um c
         printf("\n==============\n");
         printf("Nenhum usuario cadastro no banco\n");
         printf("==============\n");
-        return Clientes_Banco;
+    }else {
 
-    }
+        printf("Digite o CPF do cliente que deseja apagar: "); // Recebe o CPF que o cliente deseja deletar
+        strcpy(CPF_Cliente, solicitaCPF(Clientes_Banco));
 
-    printf("Digite o CPF do cliente que deseja apagar: "); // Recebe o CPF que o cliente deseja deletar
-    strcpy(CPF_Cliente, solicitaCPF(Clientes_Banco));
+        if (strcmp(CPF_Cliente, "Finalizar") != 0) {
+            Clientes *Clientes_Banco_temp = (Clientes *) malloc(sizeof(Clientes) *
+                                                                Clientes_Banco->Quantidade_Clientes); //Criacao de um array de struct Cliente temporario
 
-    Clientes* Clientes_Banco_temp = (Clientes*)malloc(sizeof(Clientes) * Clientes_Banco->Quantidade_Clientes); //Criacao de um array de struct Cliente temporario
+            int posicao_cliente = buscaCPF(Clientes_Banco,
+                                           CPF_Cliente); // Variavel que vai receber a posicao do cliente por meio da funcao
 
-    int posicao_cliente = buscaCPF(Clientes_Banco, CPF_Cliente); // Variavel que vai receber a posicao do cliente por meio da funcao
 
-    if (posicao_cliente == -1) { //Caso a "posicao_cliente" tiver valor -1 significa que o Banco nao possui nenhum cliente cadastrado com o CPF digitado
-        printf("\n==============\n");
-        printf("Nenhum usuario cadastro com o CPF digitado, tente novamente.\n");
-        printf("==============\n");
-        return Clientes_Banco;
-    }
-    else {
-        int cont = 0;
+            int cont = 0;
 
-        for (int i = 0; i < Clientes_Banco->Quantidade_Clientes; i++) { //Realiza a copia de todos os dados da lista de clientes exceto quando o i eh igual a posicao do cliente
+            for (int i = 0; i <
+                            Clientes_Banco->Quantidade_Clientes; i++) { //Realiza a copia de todos os dados da lista de clientes exceto quando o i eh igual a posicao do cliente
 
-            if (i != posicao_cliente) { //Realiza a copia
-                strcpy(Clientes_Banco_temp->lista[cont].nome, Clientes_Banco->lista[i].nome);
-                strcpy(Clientes_Banco_temp->lista[cont].CPF, Clientes_Banco->lista[i].CPF);
-                strcpy(Clientes_Banco_temp->lista[cont].Tipo_conta, Clientes_Banco->lista[i].Tipo_conta);
-                Clientes_Banco_temp->lista[cont].Saldo = Clientes_Banco_temp->lista[i].Saldo;
-                strcpy(Clientes_Banco_temp->lista[cont].Senha, Clientes_Banco->lista[i].Senha);
+                if (i != posicao_cliente) { //Realiza a copia
+                    strcpy(Clientes_Banco_temp->lista[cont].nome, Clientes_Banco->lista[i].nome);
+                    strcpy(Clientes_Banco_temp->lista[cont].CPF, Clientes_Banco->lista[i].CPF);
+                    strcpy(Clientes_Banco_temp->lista[cont].Tipo_conta, Clientes_Banco->lista[i].Tipo_conta);
+                    Clientes_Banco_temp->lista[cont].Saldo = Clientes_Banco_temp->lista[i].Saldo;
+                    strcpy(Clientes_Banco_temp->lista[cont].Senha, Clientes_Banco->lista[i].Senha);
 
-                cont++;
+                    cont++;
+                }
             }
+            printf("==============\n");
+            printf("Cliente apagado com sucesso !\n");
+            printf("==============\n");
+
+            Clientes_Banco_temp->Quantidade_Clientes = cont;
+
         }
-        printf("==============\n");
-        printf("Cliente apagado com sucesso !\n");
-        printf("==============\n");
-
-        Clientes_Banco_temp->Quantidade_Clientes = cont;
-
-        return Clientes_Banco_temp;
     }
+    return Clientes_Banco;
 }
 
 void listar_clientes(Clientes* Clientes_Banco) {
@@ -178,30 +173,29 @@ void listar_clientes(Clientes* Clientes_Banco) {
 
 Clientes* transferencia(Clientes* Clientes_Banco) { //Funcao que realiza a transferencia
 
-    printf("Digite O Seu CPF: ");
+    printf("Digite O Seu CPF: "); //Recebe CPF de origem
     strcpy(CPF_Cliente, solicitaCPF(Clientes_Banco));
 
-    int posicao_cliente_origem = buscaCPF(Clientes_Banco, CPF_Cliente);
+    int posicao_cliente_origem = buscaCPF(Clientes_Banco, CPF_Cliente); // Busca a posicao que o cliente esta na lista por meio do CPF
 
-    printf("Digite Sua Senha: ");
+    printf("Digite Sua Senha: "); // Recebe a senha do usuario
     char* senha_verificada = solicitaSenha(Clientes_Banco, posicao_cliente_origem);
 
-    if (strcmp(senha_verificada, "CLIENT_ERROR") == 0) {
+    if (strcmp(senha_verificada, "CLIENT_ERROR") == 0) { //Caso o cliente tenha ultrapassado o limite de tentativas para inserir a senha,a operacao eh encerrada
         printf("Limite de tentativas excedido.\n");
         printf("Operacao finalizada.\n");
         return Clientes_Banco;
     }
     else {
-        printf("Digite O CPF Do Destinatario: ");
+        printf("Digite O CPF Do Destinatario: "); //Recebe o CPF do destinatario
         strcpy(CPF_Destinatario, solicitaCPF(Clientes_Banco));
 
-        printf("Digite A Quantidade A Ser Tranferida: ");
+        printf("Digite A Quantidade A Ser Tranferida: "); //Solicita o valor que deseja transferir
         scanf_s("%lf", &Valor_Operacao);
 
-        int posicao_cliente_destino = buscaCPF(Clientes_Banco, CPF_Destinatario);
+        int posicao_cliente_destino = buscaCPF(Clientes_Banco, CPF_Destinatario); // Busca a posicao que o destinatario esta na lista
 
-        int tipo_cliente = verifica_saldo(Clientes_Banco->lista[posicao_cliente_origem].Tipo_conta,
-                                          Clientes_Banco->lista[posicao_cliente_origem].Saldo, Valor_Operacao);
+        int tipo_cliente = verifica_saldo(Clientes_Banco->lista[posicao_cliente_origem].Tipo_conta,Clientes_Banco->lista[posicao_cliente_origem].Saldo, Valor_Operacao); //Variavel que retorna 0 caso o cliente nao tenha saldo suficiente para realizar a operacao
         if (tipo_cliente == 0) {
             printf("==============\n");
             printf("Saldo insuficiente para realizar a operacao.\n");
@@ -211,14 +205,14 @@ Clientes* transferencia(Clientes* Clientes_Banco) { //Funcao que realiza a trans
         else {
             double Taxas;
 
-            if (tipo_cliente == 1) {
+            if (tipo_cliente == 1) { //Calculo da taxa caso o cliente for do tipo comum
                 Taxas = Valor_Operacao * 0.05;
             }
             else {
-                Taxas = Valor_Operacao * 0.03;
+                Taxas = Valor_Operacao * 0.03; //Calculo da taxa caso o cliente for do tipo plus
             }
 
-            Clientes_Banco->lista[posicao_cliente_origem].Saldo -= (Valor_Operacao + Taxas);
+            Clientes_Banco->lista[posicao_cliente_origem].Saldo -= (Valor_Operacao + Taxas); //Execucao da tranferencia
             Clientes_Banco->lista[posicao_cliente_destino].Saldo += Valor_Operacao;
 
             int posicao_extrato_origem = Clientes_Banco->lista[posicao_cliente_origem].Quantidade_Extrato;
@@ -227,11 +221,9 @@ Clientes* transferencia(Clientes* Clientes_Banco) { //Funcao que realiza a trans
             int posicao_extrato_destino = Clientes_Banco->lista[posicao_cliente_destino].Quantidade_Extrato;
             Clientes_Banco->lista[posicao_cliente_destino].Quantidade_Extrato++;
 
-            Clientes_Banco->lista[posicao_cliente_origem].extrato[posicao_extrato_origem] = adiciona_transacao(
-                    "Transferencia", "-", Valor_Operacao, Taxas,
-                    Clientes_Banco->lista[posicao_cliente_origem].Saldo);
-            Clientes_Banco->lista[posicao_cliente_destino].extrato[posicao_extrato_destino] = adiciona_transacao(
-                    "Transferencia", "+", Valor_Operacao, 0, Clientes_Banco->lista[posicao_cliente_destino].Saldo);
+            //Adiciona no extrato de cada cliente a operacao realizada
+            Clientes_Banco->lista[posicao_cliente_origem].extrato[posicao_extrato_origem] = adiciona_transacao("Transferencia", "-", Valor_Operacao, Taxas,Clientes_Banco->lista[posicao_cliente_origem].Saldo);
+            Clientes_Banco->lista[posicao_cliente_destino].extrato[posicao_extrato_destino] = adiciona_transacao("Transferencia", "+", Valor_Operacao, 0, Clientes_Banco->lista[posicao_cliente_destino].Saldo);
 
             printf("==============\n");
             printf("Operacao realizada com sucesso !\n");
@@ -244,49 +236,42 @@ Clientes* transferencia(Clientes* Clientes_Banco) { //Funcao que realiza a trans
 
 Clientes* debitar(Clientes* Clientes_Banco) {
 
-    printf("Digite seu CPF: ");
+    printf("Digite seu CPF: "); // Recebe o CPF do cliente
     strcpy(CPF_Cliente, solicitaCPF(Clientes_Banco));
 
-    int posicao_cliente = buscaCPF(Clientes_Banco, CPF_Cliente);
+    int posicao_cliente = buscaCPF(Clientes_Banco, CPF_Cliente); //Busca a posicao do cliente na lista do banco
 
-    int tipo_cliente = verifica_saldo(Clientes_Banco->lista[posicao_cliente].Tipo_conta, Clientes_Banco->lista[posicao_cliente].Saldo, Valor_Operacao);
+    int tipo_cliente = verifica_saldo(Clientes_Banco->lista[posicao_cliente].Tipo_conta, Clientes_Banco->lista[posicao_cliente].Saldo, Valor_Operacao); //Verifica o tipo do cliente
 
-    if (buscaCPF(Clientes_Banco, CPF_Cliente) == -1) {
+    if (tipo_cliente == 0) { //Caso o cliente nao tenha saldo suficiente a operacao eh encerrada
         printf("==============\n");
-        printf("Nenhum cliente cadastrado com o CPF digitado.\n");
+        printf("Saldo insuficiente para realizar a operacao.\n");
         printf("==============\n");
+
+        return Clientes_Banco;
     }
     else {
+        double Taxas;
 
-        if (tipo_cliente == 0) {
-            printf("==============\n");
-            printf("Saldo insuficiente para realizar a operacao.\n");
-            printf("==============\n");
-
-            return Clientes_Banco;
+        if (tipo_cliente == 1) { //Calculo de taxa da operacao caso o cliente for comum
+            Taxas = Valor_Operacao * 0.05;
         }
         else {
-            double Taxas;
-
-            if (tipo_cliente == 1) {
-                Taxas = Valor_Operacao * 0.05;
-            }
-            else {
-                Taxas = Valor_Operacao * 0.03;
-            }
-
-            Clientes_Banco->lista[posicao_cliente].Saldo -= (Valor_Operacao + Taxas);
-
-            int posicao_extrato = Clientes_Banco->lista[posicao_cliente].Quantidade_Extrato;
-            Clientes_Banco->lista[posicao_cliente].Quantidade_Extrato++;
-
-            Clientes_Banco->lista[posicao_cliente].extrato[posicao_extrato] = adiciona_transacao("Deposita", "-", Valor_Operacao, Taxas, Clientes_Banco->lista[posicao_cliente].Saldo);
+            Taxas = Valor_Operacao * 0.03; //Calculo de taxa da operacao caso o cliente for plus
         }
+
+        Clientes_Banco->lista[posicao_cliente].Saldo -= (Valor_Operacao + Taxas); //Deposita o valor da conta do cliente
+
+        int posicao_extrato = Clientes_Banco->lista[posicao_cliente].Quantidade_Extrato;
+        Clientes_Banco->lista[posicao_cliente].Quantidade_Extrato++;
+
+        Clientes_Banco->lista[posicao_cliente].extrato[posicao_extrato] = adiciona_transacao("Deposita", "-", Valor_Operacao, Taxas, Clientes_Banco->lista[posicao_cliente].Saldo); //Adiciona a operacao na lista de extrato do cliente
     }
+
 
     printf("==============\n");
     printf("Operacao realizada com sucesso !\n");
-    printf("Saldo atual apos a operacao: R$ %.2lf\n", Clientes_Banco->lista[posicao_cliente].Saldo);
+    printf("Saldo atual apos a operacao: R$ %.2lf\n", Clientes_Banco->lista[posicao_cliente].Saldo); //Mostra o saldo do cliente apos a operacao
     printf("==============\n");
 
     return Clientes_Banco;
@@ -294,33 +279,26 @@ Clientes* debitar(Clientes* Clientes_Banco) {
 
 Clientes* deposita(Clientes* Clientes_Banco) {
 
-    printf("Digite O Seu CPF: ");
+    printf("Digite O Seu CPF: "); //Recebe o CPF do cliente
     strcpy(CPF_Cliente, solicitaCPF(Clientes_Banco));
 
-    printf("Digite o valor que deseja depositar em sua conta: ");
+    printf("Digite o valor que deseja depositar em sua conta: "); //Recebe o valor do deposito
     scanf_s("%lf", &Valor_Operacao);
 
     int posicao_cliente = buscaCPF(Clientes_Banco, CPF_Cliente);
 
-    if (posicao_cliente == -1) {
-        printf("==============\n");
-        printf("Nenhum cliente cadastrado com o CPF digitado.\n");
-        printf("==============\n");
-        return Clientes_Banco;
-    }
-    else {
-        int posicao_extrato = Clientes_Banco->lista[posicao_cliente].Quantidade_Extrato;
-        Clientes_Banco->lista[posicao_cliente].Saldo += Valor_Operacao;
-        Clientes_Banco->lista[posicao_cliente].extrato[posicao_extrato] = adiciona_transacao("Deposita", "+", Valor_Operacao, 0, Clientes_Banco->lista[posicao_cliente].Saldo);
-        Clientes_Banco->lista[posicao_cliente].Quantidade_Extrato++;
+    int posicao_extrato = Clientes_Banco->lista[posicao_cliente].Quantidade_Extrato;
+    Clientes_Banco->lista[posicao_cliente].Saldo += Valor_Operacao;
+    Clientes_Banco->lista[posicao_cliente].extrato[posicao_extrato] = adiciona_transacao("Deposita", "+", Valor_Operacao, 0, Clientes_Banco->lista[posicao_cliente].Saldo);
+    Clientes_Banco->lista[posicao_cliente].Quantidade_Extrato++;
 
-        printf("==============\n");
-        printf("Operacao realizada com sucesso !\n");
-        printf("Saldo atual apos a operacao: R$ %.2lf\n", Clientes_Banco->lista[posicao_cliente].Saldo);
-        printf("==============\n");
+    printf("==============\n");
+    printf("Operacao realizada com sucesso !\n");
+    printf("Saldo atual apos a operacao: R$ %.2lf\n", Clientes_Banco->lista[posicao_cliente].Saldo);
+    printf("==============\n");
 
-        return Clientes_Banco;
-    }
+    return Clientes_Banco;
+
 }
 
 void gerar_extrato(Clientes* Clientes_Banco) {
@@ -415,10 +393,9 @@ char* solicitaCPF(Clientes* Clientes_Banco) {
         verifica = buscaCPF(Clientes_Banco, CPF_Cliente);
 
         if (verifica == -1)
-            printf("CPF nao existente no banco, digite novamente: ");
+            printf("CPF ja existente no banco, escreva novamente o CPF ou escreva 'Finalizar' para encerrar a operacao.\n");
         else
             break;
-
     }
     return CPF_Cliente;
 }
