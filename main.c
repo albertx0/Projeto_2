@@ -12,7 +12,6 @@ int main(){
     do{
 
     opcao = menu();
-
     while(getchar() != '\n');
 
     if(opcao==1){

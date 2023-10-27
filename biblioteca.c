@@ -68,10 +68,9 @@ Clientes* cadastrar(Clientes* Clientes_Banco) { //Funcao para realizar o cadastr
             printf("aq\n");
             break;
         }else if (verifica_novo_cliente == -1){ //Se a funcao retornar -1 significa que o CPF digitado pelo cliente nao existe no banco
-            verifica_saida = 0;
             break;
-        }else{
-            printf("CPF ja cadastrado no banco, digite novamente ou escreva 'Finalizar' para encerrar operacao\n"); // Caso contrario eh notificado ao cliente que o CPF digitado ja esta cadastrado no banco e adiciona a opcao do cliente finalizar a operacao
+        }else{ // Caso contrario eh notificado ao cliente que o CPF digitado ja esta cadastrado no banco e adiciona a opcao do cliente finalizar a operacao
+            printf("CPF ja cadastrado no banco, digite novamente ou escreva 'Finalizar' para encerrar operacao\n");
         }
 
     }
