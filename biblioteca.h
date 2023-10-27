@@ -1,7 +1,3 @@
-//
-// Created by unifgpinheiro on 29/09/2023.
-//
-
 #ifndef PROJETO_2_BIBLIOTECA_H
 #define PROJETO_2_BIBLIOTECA_H
 
@@ -46,17 +42,13 @@ void listar_clientes(Clientes* usuarios);
 Clientes* debitar(Clientes* usuarios);
 Clientes* transferencia(Clientes* usuarios);
 Clientes* deposita(Clientes* usuarios);
-void listar_extrato(Clientes* usuarios);
+void gerar_extrato(Clientes* usuarios);
 char* input(char *str);
 int verifica_saldo(char* Tipo_conta , double saldo_atual , double valor_operacao);
 Extrato adiciona_transacao(char* Operacao, char* Simbolo, double Valor_Movimentado, double Taxa , double Saldo_Atual);
 int buscaCPF(Clientes* usuarios, char* CPF);
 int buscaSenha(Clientes* usuarios , int posicao_cliente , char* Senha);
-
 char* solicitaCPF(Clientes* Clientes_Banco);
 char* solicitaSenha(Clientes* Clientes_Banco , int Posicao_Cliente);
-
-
-
 
 #endif //PROJETO_2_BIBLIOTECA_H
