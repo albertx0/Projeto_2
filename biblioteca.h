@@ -43,7 +43,7 @@ Clientes* debitar(Clientes* usuarios);
 Clientes* transferencia(Clientes* usuarios);
 Clientes* deposita(Clientes* usuarios);
 void gerar_extrato(Clientes* usuarios);
-char* input(char *str);
+char* input_string(char *str);
 int verifica_saldo(char* Tipo_conta , double saldo_atual , double valor_operacao);
 Extrato adiciona_transacao(char* Operacao, char* Simbolo, double Valor_Movimentado, double Taxa , double Saldo_Atual);
 int buscaCPF(Clientes* usuarios, char* CPF);
