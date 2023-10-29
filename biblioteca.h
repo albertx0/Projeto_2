@@ -1,7 +1,3 @@
-//
-// Created by unifgpinheiro on 29/09/2023.
-//
-
 #ifndef PROJETO_2_BIBLIOTECA_H
 #define PROJETO_2_BIBLIOTECA_H
 
@@ -13,15 +9,12 @@
 #include <time.h>
 
 typedef struct {
-    char operacao[20];
-    double valor;
-    double taxa;
-    int hora;
-    int minuto;
-    int segundo;
-    int dia;
-    int mes;
-    int ano;
+    char Operacao[20];
+    double Valor;
+    double Taxa;
+    double Saldo_Momento;
+    char Data_Hora[30];
+    char Simbolo[2];
 } Extrato;
 
 typedef struct{
@@ -30,34 +23,32 @@ typedef struct{
     char Tipo_conta[10];
     double Saldo;
     char Senha[50];
-    int qtd_extrato;
-    Extrato extrato[1000];
+    Extrato extrato[100];
+    int Quantidade_Extrato;
 } Dados;
 
 typedef struct{
     Dados lista[1000];
-    int qtd;
+    int Quantidade_Clientes;
 } Clientes;
 
 
 Clientes* leitura(char *nome);
 void escreve(Clientes *v , char *nome);
-Clientes* cadastrar(Clientes* usuarios, char *nome, double saldo_inicial, char *CPF, char *tipo_conta, char *senha);
-Clientes* deletar_cliente(Clientes* usuarios , char* CPF);
-void listar();
+int menu();
+Clientes* cadastrar(Clientes* usuarios);
+Clientes* deletar_cliente(Clientes* usuarios);
 void listar_clientes(Clientes* usuarios);
-void debitar(double qtd,char *CPF,char *senha);
-void transferencia(double qtd,char *cpfa, char *cpfd,char *senha);
-void menu();
-char* input(char *str);
-
-
-
-
-Clientes* deposita(Clientes* usuarios , char* CPF , double valor);
+Clientes* debitar(Clientes* usuarios);
+Clientes* transferencia(Clientes* usuarios);
+Clientes* deposita(Clientes* usuarios);
+void gerar_extrato(Clientes* usuarios);
+char* input_string(char *str);
+int verifica_saldo(char* Tipo_conta , double saldo_atual , double valor_operacao);
+Extrato adiciona_transacao(char* Operacao, char* Simbolo, double Valor_Movimentado, double Taxa , double Saldo_Atual);
 int buscaCPF(Clientes* usuarios, char* CPF);
-Extrato adiciona_transacao(char* operacao , double valor , double taxa);
-
-
+int buscaSenha(Clientes* usuarios , int posicao_cliente , char* Senha);
+char* solicitaCPF(Clientes* Clientes_Banco);
+char* solicitaSenha(Clientes* Clientes_Banco , int Posicao_Cliente);
 
 #endif //PROJETO_2_BIBLIOTECA_H
