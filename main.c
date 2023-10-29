@@ -1,7 +1,8 @@
+//Paulo Gabriel Gonçalves Leme | R.A: 21.123.075.4
+//Gabriel Albertini Pinheiro | R.A: 24.123.004-4
 #include "biblioteca.h"
 
 int main(){
-
   
   Clientes* lista_clientes = leitura("arquivo_clientes");
 
@@ -51,5 +52,4 @@ int main(){
   
   
     return 0;
-
 }
