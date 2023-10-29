@@ -1,4 +1,4 @@
-#Projeto 2 - Banco QuemPoupaTem
+# Projeto 2 - Banco QuemPoupaTem
 
 Este projeto foi realizado por estudantes do 2º semestre de Ciência da Computação do curso de Desenvolvimento de Algortimos com o auxílio do Profº Leonardo Anjoletto Ferreira, com foco no desenvolvimento de habilidades em lógica de programação e programação em linguagem C. O objetivo principal é simular o funcionamento de um aplicativo bancário. Ao iniciar o programa, os clientes têm acesso a uma variedade de operações, permitindo ao clientes em escolher a ação desejada. Dependendo da operação selecionada, o cliente será solicitado a fornecer seu CPF e senha. Se os dados inseridos estiverem incorretos, a operação será imediatamente encerrada. Após cada operação que envolve movimentação de dinheiro, todas as informações da operação são registradas na conta do cliente. Mesmo com o encerramento do programa, os dados de todos os clientes são salvos em um arquivo binário a fim de que possam ser utilizados no momento que o programa ser iniciado novamente.
 
