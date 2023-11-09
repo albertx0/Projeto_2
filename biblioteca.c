@@ -46,7 +46,7 @@ int menu() { // Funcao de menu para exibir ao cliente todas as opcoes disponivei
     printf("7 - Transfrencia.\n");
     printf("0 - Sair.\n\n");
     printf("Digite o numero da opcao desejada: ");
-    scanf_s("%d", &Opcao);
+    scanf("%d", &Opcao);
 
     return Opcao;   // A funcao retorna o numero da opcao que o cliente escolheu
 }
@@ -96,7 +96,7 @@ Clientes* cadastrar(Clientes* Clientes_Banco) { //Funcao para realizar o cadastr
             input_string(Tipo_Conta);
 
             printf("Digite o saldo inicial da conta: "); //Recebe o valor inicial que o cliente deseja ter em sua conta
-            scanf_s("%lf", &Saldo);
+            scanf("%lf", &Saldo);
 
             int nova_posicao = Clientes_Banco->Quantidade_Clientes; // Variavel que recebe o indice de clientes atual do banco
 
@@ -206,7 +206,7 @@ Clientes* transferencia(Clientes* Clientes_Banco) { //Funcao que realiza a trans
             if (strcmp(CPF_Cliente, "Finalizar") != 0) {
 
                 printf("Digite A Quantidade A Ser Tranferida: "); //Solicita o valor que deseja transferir
-                scanf_s("%lf", &Valor_Operacao);
+                scanf("%lf", &Valor_Operacao);
 
                 int posicao_cliente_destino = buscaCPF(Clientes_Banco,
                                                        CPF_Destinatario); // Busca a posicao que o destinatario esta na lista
@@ -284,7 +284,7 @@ Clientes* debitar(Clientes* Clientes_Banco) {
         } else {
 
             printf("Digite o valor que deseja debitar da conta: ");
-            scanf_s("%lf", &Valor_Operacao);
+            scanf("%lf", &Valor_Operacao);
 
             int tipo_cliente = verifica_saldo(Clientes_Banco->lista[posicao_cliente].Tipo_conta,
                                               Clientes_Banco->lista[posicao_cliente].Saldo,
@@ -337,7 +337,7 @@ Clientes* deposita(Clientes* Clientes_Banco) {
     if (strcmp(CPF_Cliente, "Finalizar") != 0) {
 
         printf("Digite o valor que deseja depositar em sua conta: "); //Recebe o valor do deposito
-        scanf_s("%lf", &Valor_Operacao);
+        scanf("%lf", &Valor_Operacao);
 
         int posicao_cliente = buscaCPF(Clientes_Banco, CPF_Cliente); //Busca pelo indice do cliente na lista do banco
 
